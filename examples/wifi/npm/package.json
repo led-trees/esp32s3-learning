@@ -1,0 +1,13 @@
+{
+  "name": "esp32s3-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm --parallel --stream -r run build",
+    "watch": "pnpm --parallel --stream -r run watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
