@@ -1,13 +1,13 @@
 using System;
 using System.Device.Spi;
 using System.Diagnostics;
-using System.Threading;
 using nanoFramework.Hardware.Esp32;
 
 namespace spiled
 {
     public class Program
     {
+        //const int SPI_NUMBER = 2;
         const int STRIPS_CNT = 2;
         const int LEDS_CNT = 10;
 
@@ -15,35 +15,47 @@ namespace spiled
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
+            //var spiBusInfo = SpiDevice.GetBusInfo(2);
+            //Debug.WriteLine($"{nameof(spiBusInfo.MaxClockFrequency)}: {spiBusInfo.MaxClockFrequency}");
+            //Debug.WriteLine($"{nameof(spiBusInfo.MinClockFrequency)}: {spiBusInfo.MinClockFrequency}");
+
             Configuration.SetPinFunction(41, DeviceFunction.SPI2_MOSI);
             Configuration.SetPinFunction(39, DeviceFunction.SPI2_MISO);
             Configuration.SetPinFunction(40, DeviceFunction.SPI2_CLOCK);
 
-            SpiBusInfo spiBusInfo = SpiDevice.GetBusInfo(1);
-            Debug.WriteLine($"{nameof(spiBusInfo.MaxClockFrequency)}: {spiBusInfo.MaxClockFrequency}");
-            Debug.WriteLine($"{nameof(spiBusInfo.MinClockFrequency)}: {spiBusInfo.MinClockFrequency}");
-
-            SpiDevice spiDevice;
-            SpiConnectionSettings connectionSettings;
-
-            connectionSettings = new SpiConnectionSettings(2, 37);
-            connectionSettings.ClockFrequency = 2_500_000;
-            connectionSettings.DataBitLength = 7;
-            connectionSettings.DataFlow = DataFlow.LsbFirst;
+            var connectionSettings = new SpiConnectionSettings(2, 37);
+            connectionSettings.ClockFrequency = 4_000_000;
+            connectionSettings.DataBitLength = 8;
+            connectionSettings.DataFlow = DataFlow.MsbFirst;
             connectionSettings.Mode = SpiMode.Mode0;
-            connectionSettings.Configuration = SpiBusConfiguration.Simplex;
-            connectionSettings.ChipSelectLineActiveState = true;
+            connectionSettings.Configuration = SpiBusConfiguration.FullDuplex;
+            connectionSettings.ChipSelectLineActiveState = false;
 
-            // Then you create your SPI device by passing your settings
-            spiDevice = SpiDevice.Create(connectionSettings);
+            var spiDevice = SpiDevice.Create(connectionSettings);
 
-            // You can write a SpanByte
-            SpanByte writeBufferSpanByte = new byte[2] { 42, 84 };
-            spiDevice.Write(writeBufferSpanByte);
+            SpanByte writeBufferSpanByte = new byte[24] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            spiDevice.WriteByte(200);
+            byte i = 0;
+            bool back = false;
+            while (true)
+            {
+                for (var b = 0; b < writeBufferSpanByte.Length; b++)
+                    writeBufferSpanByte[b] = i;
 
-            Thread.Sleep(Timeout.Infinite);
+                spiDevice.Write(writeBufferSpanByte);
+
+                if (i == 0 && back)
+                    back = false;
+                else if (i == 255 && !back)
+                    back = true;
+
+                if (back)
+                    i--;
+                else
+                    i++;
+
+                //Thread.Sleep(1);
+            }
         }
     }
 }
