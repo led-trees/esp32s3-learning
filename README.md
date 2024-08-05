@@ -1,6 +1,11 @@
 # ESP32 S3 learning
 
+Ссылки:
 
+- [nanoframework](https://www.nanoframework.net/)
+- [nf-interpreter](https://github.com/nanoframework/nf-interpreter)
+- [nanoff](https://github.com/nanoframework/nanoFirmwareFlasher)
+- [samples](https://github.com/nanoframework/Samples)
 
 ## Настройка среды разработки
 
