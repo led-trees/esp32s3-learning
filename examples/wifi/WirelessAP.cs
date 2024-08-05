@@ -16,7 +16,7 @@ namespace NFApp1
         /// <summary>
         /// Gets or sets the SSID of the Soft AP.
         /// </summary>
-        public static string SoftApSsid { get; set; } = "MySuperSSID";
+        public static string SoftApSsid { get; set; } = "LedTrees Board";
 
         /// <summary>
         /// Sets the configuration for the wireless access point.
@@ -24,6 +24,11 @@ namespace NFApp1
         public static void SetWifiAp()
         {
             Wireless80211.Disable();
+
+            WirelessAPConfiguration wapconf = GetConfiguration();
+            wapconf.Options = WirelessAPConfiguration.ConfigurationOptions.None;
+            wapconf.SaveConfiguration();
+
             if (Setup() == false)
             {
                 // Reboot device to Activate Access Point on restart
