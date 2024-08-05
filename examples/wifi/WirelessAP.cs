@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 using Iot.Device.DhcpServer;
 using nanoFramework.Runtime.Native;
 
-namespace NFApp1
+namespace wifi
 {
     public static class WirelessAP
     {

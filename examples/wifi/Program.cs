@@ -7,7 +7,7 @@ using System.Net.WebSockets.Server;
 using System.Threading;
 using nanoFramework.WebServer;
 
-namespace NFApp1
+namespace wifi
 {
     public class Program
     {

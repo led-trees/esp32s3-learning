@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace NFApp1
+namespace wifi
 {
     
     internal partial class Resources
@@ -20,7 +20,7 @@ namespace NFApp1
             {
                 if ((Resources.manager == null))
                 {
-                    Resources.manager = new System.Resources.ResourceManager("NFApp1.Resources", typeof(Resources).Assembly);
+                    Resources.manager = new System.Resources.ResourceManager("wifi.Resources", typeof(Resources).Assembly);
                 }
                 return Resources.manager;
             }
