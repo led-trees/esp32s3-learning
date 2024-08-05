@@ -31,13 +31,21 @@ dotnet tool install -g nanoff
 3. Включите/отключите перемычку **RESET**.
 4. Плата готока к прошивке.
 
-Выполните команду:
+Чтобы узнать список подключённыз портов выполните:
 
-`nanoff --update --target ESP32_S3 --serialport COM7`
+```
+nanoff --listports
+```
+
+Прошивка firmware в плату:
+
+```
+nanoff --update --target ESP32_S3 --serialport COM7
+```
 
 Где, `COM7`, это номер порта. В **BOOT** режиме он всегда отличается.
 
-> Выполнять комманду нужно только с подключённым VPN, так как доступ к образам firmware закрыт из РФ.
+> Выполнять комманду нужно только с подключённым VPN, так как доступ к образам firmware закрыт из РФ. Если нет VPN, то выполните [действия](firmwares/README.md).
 
 После прошивки уберите перемычку **BOOT** и включите/отключите перемычку **RESET**.
 
@@ -46,6 +54,16 @@ dotnet tool install -g nanoff
 - **ESP32_S3** - Quad spiram support
 - **ESP32_S3_BLE** - Display, BLE, Quad spiram support
 - **ESP32_S3_ALL** - Display, BLE, Octal spiram support
+
+### Получение информации об устройстве
+
+Получить информацию о подключённом девайсе:
+
+```
+nanoff --platform esp32 --serialport COM31 --devicedetails
+```
+
+> Комманда работает только в **BOOT** режиме.
 
 ### Плата ушла в цикл перезагрузки
 
