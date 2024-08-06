@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  package/inline-js.ts:
+  package/inline-js:
     dependencies:
       '@brandup/ui-dom':
         specifier: ^1.0.22
@@ -58,7 +58,7 @@ importers:
     dependencies:
       '@esp32s3-frontend/inline-js':
         specifier: workspace:*
-        version: link:../inline-js.ts
+        version: link:../inline-js
     devDependencies:
       cross-env:
         specifier: ^7.0.3
