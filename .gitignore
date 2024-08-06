@@ -401,3 +401,4 @@ FodyWeavers.xsd
 examples/**/*.js
 examples/wifi/npm/package/**/*.css
 !examples/**/*.config.js
+**/pnpm-lock.yaml
