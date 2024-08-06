@@ -398,6 +398,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 **/wifi/client/*
-examples/wifi/npm/package/**/*.js
+examples/**/*.js
 examples/wifi/npm/package/**/*.css
-!examples/wifi/npm/package/**/*.config.js
+!examples/**/*.config.js
