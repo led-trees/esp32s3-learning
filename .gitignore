@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+**/wifi/client/*
+examples/**/*.js
+examples/wifi/npm/package/**/*.css
+!examples/**/*.config.js
+pnpm-lock.yaml
