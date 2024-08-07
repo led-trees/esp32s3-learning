@@ -7,7 +7,7 @@ namespace blink
 {
     public class Program
     {
-        private static GpioController s_GpioController;
+        static GpioController s_GpioController;
 
         public static void Main()
         {
