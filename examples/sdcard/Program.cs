@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using nanoFramework.Hardware.Esp32;
 using nanoFramework.System.IO;
 using nanoFramework.System.IO.FileSystem;
 
@@ -15,14 +14,17 @@ namespace sdcard
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            mycard = new SDCard(new SDCard.SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit, enableCardDetectPin = false, cardDetectPin = 21 });
+            //var gpioController = new GpioController();
+            //var togglersEnable = gpioController.OpenPin(11, PinMode.);
+
+            mycard = new SDCard(new SDCard.SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._1_bit, enableCardDetectPin = false });
 
             Debug.WriteLine("SDcard inited");
 
-            NativeMemory.GetMemoryInfo(NativeMemory.MemoryType.Internal, out var totalSize, out var totalFreeSize, out var largestFreeBlock);
-            Debug.WriteLine($"totalSize: {totalSize}");
-            Debug.WriteLine($"totalFreeSize: {totalFreeSize}");
-            Debug.WriteLine($"largestFreeBlock: {largestFreeBlock}");
+            //NativeMemory.GetMemoryInfo(NativeMemory.MemoryType.Internal, out var totalSize, out var totalFreeSize, out var largestFreeBlock);
+            //Debug.WriteLine($"totalSize: {totalSize}");
+            //Debug.WriteLine($"totalFreeSize: {totalFreeSize}");
+            //Debug.WriteLine($"largestFreeBlock: {largestFreeBlock}");
 
             // Option 1 - No card detect 
             // Try to mount card
@@ -43,9 +45,7 @@ namespace sdcard
         static void UnMountIfMounted()
         {
             if (mycard.IsMounted)
-            {
                 mycard.Unmount();
-            }
         }
 
         static bool MountMyCard()

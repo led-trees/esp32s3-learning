@@ -1,29 +1,37 @@
 using System.Device.Gpio;
 using System.Diagnostics;
 using System.Threading;
-using nanoFramework.Hardware.Esp32;
 
 namespace blink
 {
     public class Program
     {
-        static GpioController s_GpioController;
-
         public static void Main()
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            s_GpioController = new GpioController();
+            var gpioController = new GpioController();
+            var led1 = gpioController.OpenPin(1, PinMode.Output);
+            var led2 = gpioController.OpenPin(2, PinMode.Output);
 
-            GpioPin led = s_GpioController.OpenPin(Gpio.IO38, PinMode.Output);
+            var on = false;
+            while (true)
+            {
+                if (on)
+                {
+                    on = false;
+                    led1.Write(PinValue.Low);
+                    led2.Write(PinValue.High);
+                }
+                else
+                {
+                    on = true;
+                    led1.Write(PinValue.High);
+                    led2.Write(PinValue.Low);
+                }
 
-            led.Write(PinValue.High);
-
-            Thread.Sleep(Timeout.Infinite);
-
-            // Browse our samples repository: https://github.com/nanoframework/samples
-            // Check our documentation online: https://docs.nanoframework.net/
-            // Join our lively Discord community: https://discord.gg/gCyBu8T
+                Thread.Sleep(1000);
+            }
         }
     }
 }
