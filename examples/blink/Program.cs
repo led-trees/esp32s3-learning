@@ -14,6 +14,8 @@ namespace blink
             var led1 = gpioController.OpenPin(1, PinMode.Output);
             var led2 = gpioController.OpenPin(2, PinMode.Output);
 
+            var data = interoplib.Utilities.HardwareSerial;
+
             var on = false;
             while (true)
             {

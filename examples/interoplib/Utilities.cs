@@ -15,7 +15,7 @@ namespace interoplib
             {
                 if (_hardwareSerial == null)
                 {
-                    _hardwareSerial = new byte[12];
+                    _hardwareSerial = new byte[6];
                     NativeGetHardwareSerial(_hardwareSerial);
                 }
 
