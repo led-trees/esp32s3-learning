@@ -20,6 +20,8 @@ Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "interoplib", "examples\inte
 EndProject
 Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "switcher", "examples\switcher\switcher.nfproj", "{6442DFC2-C38D-479E-9FAE-BABB3B96578E}"
 EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "sim", "examples\sim\sim.nfproj", "{C60929E2-DC7D-409A-9592-FE1B717828F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,12 @@ Global
 		{6442DFC2-C38D-479E-9FAE-BABB3B96578E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6442DFC2-C38D-479E-9FAE-BABB3B96578E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6442DFC2-C38D-479E-9FAE-BABB3B96578E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60929E2-DC7D-409A-9592-FE1B717828F3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
