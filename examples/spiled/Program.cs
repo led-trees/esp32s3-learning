@@ -1,4 +1,3 @@
-using System.Device.Spi;
 using System.Diagnostics;
 using System.Threading;
 using interoplib;
@@ -11,7 +10,7 @@ namespace spiled
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            var pixels = 100;
+            var pixels = 300;
             LedPixelController.Init(pixels, 0, 0, 255);
 
             Thread.Sleep(2000);
@@ -53,7 +52,7 @@ namespace spiled
             //Configuration.SetPinFunction(39, DeviceFunction.SPI2_MISO);
             //Configuration.SetPinFunction(40, DeviceFunction.SPI2_CLOCK);
 
-            var connectionSettings = new SpiConnectionSettings(2, 37);
+            //var connectionSettings = new SpiConnectionSettings(2, 37);
             //connectionSettings.ClockFrequency = 2_500_000;
             //connectionSettings.DataBitLength = 8;
             //connectionSettings.DataFlow = DataFlow.MsbFirst;
