@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
 using interoplib;
@@ -10,38 +11,48 @@ namespace spiled
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            var pixels = 300;
-            LedPixelController.Init(pixels, 0, 0, 255);
-
-            Thread.Sleep(2000);
+            var pixels = 200;
+            LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
 
-            byte color = 0;
-            while (color < 255)
+            while (true)
             {
-                leds.Color(color, color, color);
+                Thread.Sleep(2000);
 
-                Thread.Sleep(10);
+                //byte color = 0;
+                //while (color < 255)
+                //{
+                //    leds.Color(color, color, color);
 
-                color += 5;
+                //    color += 15;
+                //}
+
+                var colors = new Color[] {
+                    new (255, 0, 0),
+                    new ( 0, 255, 0 ),
+                    new (0, 0, 255 ),
+                    new (255, 255, 0),
+                    new (255, 0, 255),
+                    new (0, 255, 255),
+                    new (232, 225, 50),
+                };
+
+                foreach (var c in colors)
+                {
+                    leds.Color(c);
+
+                    Thread.Sleep(1000);
+                }
+
+                break;
             }
 
-            var colors = new Color[] {
-                new (255, 0, 0),
-                new ( 0, 255, 0 ),
-                new (0, 0, 255 ),
-                new (255, 255, 0),
-                new (255, 0, 255),
-                new (0, 255, 255),
-                new (232, 225, 50),
-            };
-
-            foreach (var c in colors)
+            while (true)
             {
-                leds.Color(c);
+                leds.Random();
 
-                Thread.Sleep(1000);
+                Thread.Sleep(200);
             }
 
             //var spiBusInfo = SpiDevice.GetBusInfo(2);
@@ -95,7 +106,7 @@ namespace spiled
             data = new byte[bufferSize];
 
             for (var i = 0; i < bufferSize; i++)
-                data[i] = 0;
+                data[i] = 255;
 
             LedPixelController.Write(data);
         }
@@ -122,6 +133,14 @@ namespace spiled
                 else
                     color++;
             }
+
+            LedPixelController.Write(data);
+        }
+
+        public void Random()
+        {
+            var rand = new Random();
+            rand.NextBytes(data);
 
             LedPixelController.Write(data);
         }
