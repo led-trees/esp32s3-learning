@@ -14,6 +14,7 @@ namespace switcher
 
             var gpioController = new GpioController();
 
+            // назначаем пины дл€ регистра переключателей
             var togglersEnable = gpioController.OpenPin(3, PinMode.Output); // 15 - CLK_EN выставить в 0 - это разрешение тактировани€. ћожно один раз выставить при загрузке программы
             var togglersRefresh = gpioController.OpenPin(8, PinMode.Output);   // 12 - LATCH/CS0
             var togglersClk = gpioController.OpenPin(40, PinMode.Output);  // 33 - SPI_CLK на clk
