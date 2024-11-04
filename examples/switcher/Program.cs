@@ -14,10 +14,11 @@ namespace switcher
 
             var gpioController = new GpioController();
 
-            var togglersEnable = gpioController.OpenPin(3, PinMode.Output); // 15 - CLK_EN выставить в 0 - это разрешение тактирования. Можно один раз выставить при загрузке программы
+            // РЅР°Р·РЅР°С‡Р°РµРј РїРёРЅС‹ РґР»СЏ СЂРµРіРёСЃС‚СЂР° РїРµСЂРµРєР»СЋС‡Р°С‚РµР»РµР№
+            var togglersEnable = gpioController.OpenPin(3, PinMode.Output); // 15 - CLK_EN РІС‹СЃС‚Р°РІРёС‚СЊ РІ 0 - СЌС‚Рѕ СЂР°Р·СЂРµС€РµРЅРёРµ С‚Р°РєС‚РёСЂРѕРІР°РЅРёСЏ. РњРѕР¶РЅРѕ РѕРґРёРЅ СЂР°Р· РІС‹СЃС‚Р°РІРёС‚СЊ РїСЂРё Р·Р°РіСЂСѓР·РєРµ РїСЂРѕРіСЂР°РјРјС‹
             var togglersRefresh = gpioController.OpenPin(8, PinMode.Output);   // 12 - LATCH/CS0
-            var togglersClk = gpioController.OpenPin(40, PinMode.Output);  // 33 - SPI_CLK на clk
-            var togglersValue = gpioController.OpenPin(39, PinMode.Input);  // 32 - DATA_SER_OUT/MISO на MISO
+            var togglersClk = gpioController.OpenPin(40, PinMode.Output);  // 33 - SPI_CLK РЅР° clk
+            var togglersValue = gpioController.OpenPin(39, PinMode.Input);  // 32 - DATA_SER_OUT/MISO РЅР° MISO
 
             // enable toggler function
             togglersEnable.Write(PinValue.Low);
