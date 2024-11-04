@@ -11,7 +11,7 @@ namespace spiled
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            var pixels = 200;
+            var pixels = 250;
             LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
@@ -78,7 +78,7 @@ namespace spiled
 
             //instanceCaller.Start();
 
-            Thread.Sleep(Timeout.Infinite);
+            //Thread.Sleep(Timeout.Infinite);
         }
     }
 
