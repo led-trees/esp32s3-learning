@@ -1,4 +1,5 @@
 using System;
+using System.Device.Gpio;
 using System.Diagnostics;
 using System.Threading;
 using interoplib;
@@ -11,10 +12,37 @@ namespace spiled
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
+            var gpioController = new GpioController();
+
+            // назначаем пины дл€ регистра переключателей
+            var togglersEnable = gpioController.OpenPin(3, PinMode.Output); // 15 - CLK_EN выставить в 0 - это разрешение тактировани€. ћожно один раз выставить при загрузке программы
+            var togglersRefresh = gpioController.OpenPin(8, PinMode.Output);   // 12 - LATCH/CS0
+            var togglersClk = gpioController.OpenPin(40, PinMode.Output);  // 33 - SPI_CLK на clk
+            var togglersValue = gpioController.OpenPin(39, PinMode.Input);  // 32 - DATA_SER_OUT/MISO на MISO
+
+            // enable toggler function
+            togglersEnable.Write(PinValue.Low);
+
+            // ensure toggler registers
+            togglersRefresh.Write(PinValue.Low);
+            togglersRefresh.Write(PinValue.High);
+
+            // read toggler state
+            var togglers = new bool[8];
+            for (var i = 7; i >= 0; i--)
+            {
+                var pValue = togglersValue.Read();
+                togglers[i] = pValue != PinValue.High;
+
+                togglersClk.Write(PinValue.High);
+                togglersClk.Write(PinValue.Low);
+            }
+
             var pixels = 250;
             LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
+            leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
 
             while (true)
             {
@@ -114,6 +142,52 @@ namespace spiled
         public void Color(Color color)
         {
             Color(color.Red, color.Green, color.Blue);
+        }
+
+        public void Color(Color color1, Color color2, Color color3, Color color4)
+        {
+            var ch = 0;
+            for (var i = 0; i < data.Length; i++)
+            {
+                switch (ch)
+                {
+                    case 0:
+                        data[i] = color1.Red;
+                        i++;
+                        data[i] = color1.Green;
+                        i++;
+                        data[i] = color1.Blue;
+                        break;
+                    case 1:
+                        data[i] = color2.Red;
+                        i++;
+                        data[i] = color2.Green;
+                        i++;
+                        data[i] = color2.Blue;
+                        break;
+                    case 2:
+                        data[i] = color3.Red;
+                        i++;
+                        data[i] = color3.Green;
+                        i++;
+                        data[i] = color3.Blue;
+                        break;
+                    case 3:
+                        data[i] = color4.Red;
+                        i++;
+                        data[i] = color4.Green;
+                        i++;
+                        data[i] = color4.Blue;
+                        break;
+                }
+
+                if (ch < 3)
+                    ch++;
+                else
+                    ch = 0;
+            }
+
+            LedPixelController.Write(data);
         }
 
         public void Color(byte red, byte green, byte blue)
