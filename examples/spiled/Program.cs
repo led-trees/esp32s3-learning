@@ -13,36 +13,20 @@ namespace spiled
             Debug.WriteLine("Hello from nanoFramework!");
 
             var gpioController = new GpioController();
+            var ledIndicator = new LedIndicator(gpioController);
+            var togglers = new Togglers(gpioController);
 
-            // назначаем пины дл€ регистра переключателей
-            var togglersEnable = gpioController.OpenPin(3, PinMode.Output); // 15 - CLK_EN выставить в 0 - это разрешение тактировани€. ћожно один раз выставить при загрузке программы
-            var togglersRefresh = gpioController.OpenPin(8, PinMode.Output);   // 12 - LATCH/CS0
-            var togglersClk = gpioController.OpenPin(40, PinMode.Output);  // 33 - SPI_CLK на clk
-            var togglersValue = gpioController.OpenPin(39, PinMode.Input);  // 32 - DATA_SER_OUT/MISO на MISO
+            var deviceNumber = togglers.Byte;
+            Debug.WriteLine($"Ќомер платы: {deviceNumber}");
 
-            // enable toggler function
-            togglersEnable.Write(PinValue.Low);
+            ledIndicator.Led1 = true;
 
-            // ensure toggler registers
-            togglersRefresh.Write(PinValue.Low);
-            togglersRefresh.Write(PinValue.High);
-
-            // read toggler state
-            var togglers = new bool[8];
-            for (var i = 7; i >= 0; i--)
-            {
-                var pValue = togglersValue.Read();
-                togglers[i] = pValue != PinValue.High;
-
-                togglersClk.Write(PinValue.High);
-                togglersClk.Write(PinValue.Low);
-            }
-
-            var pixels = 250;
+            var pixels = 284;
             LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
             leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
+            // reg, green, blue, yellow
 
             while (true)
             {
@@ -70,7 +54,9 @@ namespace spiled
                 {
                     leds.Color(c);
 
+                    ledIndicator.Led2 = true;
                     Thread.Sleep(1000);
+                    ledIndicator.Led2 = false;
                 }
 
                 break;
@@ -80,7 +66,9 @@ namespace spiled
             {
                 leds.Random();
 
+                ledIndicator.Led2 = true;
                 Thread.Sleep(200);
+                ledIndicator.Led2 = false;
             }
 
             //var spiBusInfo = SpiDevice.GetBusInfo(2);
