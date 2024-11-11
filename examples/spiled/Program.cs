@@ -25,6 +25,15 @@ namespace spiled
             LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
+
+            //while (true)
+            //{
+            //    ledIndicator.Led2 = true;
+            //    leds.Color(new(232, 225, 50));
+            //    ledIndicator.Led2 = false;
+            //    Thread.Sleep(1000);
+            //}
+
             leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
             // reg, green, blue, yellow
 
@@ -62,14 +71,14 @@ namespace spiled
                 break;
             }
 
-            while (true)
-            {
-                leds.Random();
+            //while (true)
+            //{
+            //    leds.Random();
 
-                ledIndicator.Led2 = true;
-                Thread.Sleep(200);
-                ledIndicator.Led2 = false;
-            }
+            //    ledIndicator.Led2 = true;
+            //    Thread.Sleep(200);
+            //    ledIndicator.Led2 = false;
+            //}
 
             //var spiBusInfo = SpiDevice.GetBusInfo(2);
             //Debug.WriteLine($"{nameof(spiBusInfo.MaxClockFrequency)}: {spiBusInfo.MaxClockFrequency}");
@@ -94,7 +103,7 @@ namespace spiled
 
             //instanceCaller.Start();
 
-            //Thread.Sleep(Timeout.Infinite);
+            Thread.Sleep(Timeout.Infinite);
         }
     }
 
