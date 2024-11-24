@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoFramework</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        h1, legend {
+            text-align: center;
+        }
+
+        form {
+            max-width: 250px;
+            margin: 10px auto 0 auto;
+        }
+
+        fieldset {
+            border-radius: 5px;
+            box-shadow: 3px 3px 15px hsl(0, 0%, 90%);
+            font-size: large;
+        }
+
+        input {
+            width: 100%;
+            padding: 4px;
+            margin-bottom: 8px;
+            border: 1px solid hsl(0, 0%, 50%);
+            border-radius: 3px;
+            font-size: medium;
+        }
+
+            input[type=submit]:hover {
+                cursor: pointer;
+                background-color: hsl(0, 0%, 90%);
+                transition: 0.5s;
+            }
+
+        @media only screen and (max-width: 768px) {
+            form {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+    <script>
+        const messages = document.getElementById("messages");
+        const createMessage = function (text) {
+            let elem = document.createElement("div");
+            elem.innerText = text;
+            messages.insertAdjacentElement("beforeend", elem);
+        }
+
+        createMessage("app started");
+
+        var ws = new WebSocket("ws://" + location.hostname + ":80");
+        ws.binaryType = "arraybuffer";
+        ws.onopen = function () {
+            createMessage("connected");
+            setTimeout(function () { ws.send('hello'); }, 1000);
+        };
+        ws.onmessage = function (evt) {
+            console.log(evt.data);
+
+            if (evt.data instanceof ArrayBuffer) {
+                var dv = new DataView(evt.data);
+                var decoder = new TextDecoder('utf-8');
+                var decodedString = decoder.decode(dv);
+                console.log(decodedString);
+
+                createMessage(decodedString);
+            }
+        };
+    </script>
+</body>
+</html>

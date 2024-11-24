@@ -397,6 +397,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+/OutputDir
+
 **/wifi/client/*
 examples/**/*.js
 examples/wifi/npm/package/**/*.css

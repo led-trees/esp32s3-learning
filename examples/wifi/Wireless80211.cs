@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using nanoFramework.Networking;
 
-namespace NFApp1
+namespace wifi
 {
     class Wireless80211
     {

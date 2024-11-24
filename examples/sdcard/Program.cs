@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
-using nanoFramework.Hardware.Esp32;
 using nanoFramework.System.IO;
 using nanoFramework.System.IO.FileSystem;
 
@@ -15,18 +15,32 @@ namespace sdcard
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            mycard = new SDCard(new SDCard.SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit, enableCardDetectPin = false, cardDetectPin = 21 });
+            //var gpioController = new GpioController();
+            //var togglersEnable = gpioController.OpenPin(11, PinMode.);
+
+            mycard = new SDCard(new SDCard.SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit });
 
             Debug.WriteLine("SDcard inited");
 
-            NativeMemory.GetMemoryInfo(NativeMemory.MemoryType.Internal, out var totalSize, out var totalFreeSize, out var largestFreeBlock);
-            Debug.WriteLine($"totalSize: {totalSize}");
-            Debug.WriteLine($"totalFreeSize: {totalFreeSize}");
-            Debug.WriteLine($"largestFreeBlock: {largestFreeBlock}");
+            //NativeMemory.GetMemoryInfo(NativeMemory.MemoryType.Internal, out var totalSize, out var totalFreeSize, out var largestFreeBlock);
+            //Debug.WriteLine($"totalSize: {totalSize}");
+            //Debug.WriteLine($"totalFreeSize: {totalFreeSize}");
+            //Debug.WriteLine($"largestFreeBlock: {largestFreeBlock}");
 
             // Option 1 - No card detect 
             // Try to mount card
             MountMyCard();
+
+            var current = Directory.GetCurrentDirectory();
+            var dirs = Directory.GetDirectories("D:\\");
+            var files = Directory.GetFiles("D:\\");
+
+            var drivers = DriveInfo.GetDrives();
+
+            var filePath = "D:\\test.txt";
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+            File.WriteAllText(filePath, "test test");
 
             // Option 2 use events to mount
             // if Card detect available, enable events and mount when card inserted
@@ -43,9 +57,7 @@ namespace sdcard
         static void UnMountIfMounted()
         {
             if (mycard.IsMounted)
-            {
                 mycard.Unmount();
-            }
         }
 
         static bool MountMyCard()
@@ -72,12 +84,12 @@ namespace sdcard
         // This only works for SD card adapter that include card detect pin tied to GPIO pin
         // If no Card Detect pin then events not required
 
-        private static void StorageEventManager_RemovableDeviceRemoved(object sender, RemovableDriveEventArgs e)
+        static void StorageEventManager_RemovableDeviceRemoved(object sender, RemovableDriveEventArgs e)
         {
             Debug.WriteLine($"Card removed - Event:{e.Event} Path:{e.Drive}");
         }
 
-        private static void StorageEventManager_RemovableDeviceInserted(object sender, RemovableDriveEventArgs e)
+        static void StorageEventManager_RemovableDeviceInserted(object sender, RemovableDriveEventArgs e)
         {
             Debug.WriteLine($"Card inserted - Event:{e.Event} Path:{e.Drive}");
 
