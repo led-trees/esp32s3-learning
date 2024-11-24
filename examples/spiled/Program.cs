@@ -21,18 +21,21 @@ namespace spiled
 
             ledIndicator.Led1 = true;
 
-            var pixels = 284;
+            ushort pixels = 262;
             LedPixelController.Init(pixels, 255, 255, 255);
 
             var leds = new Leds(pixels);
 
-            //while (true)
-            //{
-            //    ledIndicator.Led2 = true;
-            //    leds.Color(new(232, 225, 50));
-            //    ledIndicator.Led2 = false;
-            //    Thread.Sleep(1000);
-            //}
+            while (true)
+            {
+                ledIndicator.Led2 = true;
+
+                //leds.Color(new(232, 225, 50));
+                leds.Colors(new Color[] { new(255, 0, 0), new(0, 255, 0), new(0, 0, 255) });
+
+                ledIndicator.Led2 = false;
+                Thread.Sleep(1000);
+            }
 
             leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
             // reg, green, blue, yellow
@@ -124,14 +127,17 @@ namespace spiled
     public class Leds
     {
         readonly byte[] data;
+        readonly ushort countPixels;
 
-        public Leds(int countPixels)
+        public Leds(ushort countPixels)
         {
+            this.countPixels = countPixels;
+
             var bufferSize = countPixels * 4 * 3;
             data = new byte[bufferSize];
 
             for (var i = 0; i < bufferSize; i++)
-                data[i] = 255;
+                data[i] = 0;
 
             LedPixelController.Write(data);
         }
@@ -214,6 +220,33 @@ namespace spiled
             rand.NextBytes(data);
 
             LedPixelController.Write(data);
+        }
+
+        public void Colors(Color[] colors)
+        {
+            var part = countPixels / colors.Length;
+            var diff = countPixels - part * colors.Length;
+
+            var rowOffset = 0;
+            foreach (var color in colors)
+            {
+                for (var iRow = 0; iRow < part; iRow++)
+                {
+                    var startRow = rowOffset * 4 * 3;
+                    for (var iCell = 0; iCell < 4; iCell++)
+                    {
+                        var startCell = startRow + (iCell * 3);
+                        // led 1
+                        data[startCell] = color.Red;
+                        data[startCell + 1] = color.Green;
+                        data[startCell + 2] = color.Blue;
+                    }
+
+                    rowOffset += 1;
+                }
+
+                rowOffset += part;
+            }
         }
     }
 
