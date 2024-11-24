@@ -8,6 +8,8 @@ namespace spiled
 {
     public class Program
     {
+        public static string SoftApIP { get; set; } = "192.168.4.1";
+
         public static void Main()
         {
             Debug.WriteLine("Hello from nanoFramework!");
@@ -22,7 +24,8 @@ namespace spiled
             ledIndicator.Led1 = true;
 
             ushort pixels = 262;
-            LedPixelController.Init(pixels, 255, 255, 255);
+            LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
+            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
 
             var leds = new Leds(pixels);
 
@@ -246,93 +249,6 @@ namespace spiled
                 }
 
                 rowOffset += part;
-            }
-        }
-    }
-
-    public class LedPixels
-    {
-        const int STRIPS_CNT = 4;
-        const int LEDS_CNT = 200;
-        const int BUFER_SIZE = STRIPS_CNT * LEDS_CNT * 3;
-
-        readonly Strip[] strips = new Strip[STRIPS_CNT];
-        readonly byte[] led = new byte[3] { 0x_FF, 0x_FF, 0x_FF };
-        byte[] buffer = new byte[BUFER_SIZE];
-        bool back = false;
-
-        public LedPixels()
-        {
-        }
-
-        public void Work()
-        {
-            for (var s = 0; s < STRIPS_CNT; s++)
-                strips[s] = new Strip(s, LEDS_CNT);
-
-            for (var s = 0; s < BUFER_SIZE; s++)
-                buffer[s] = 0x_FF;
-
-            LedPixelController.Init(LEDS_CNT, 0x_00, 0x_00, 0x_FF);
-
-            Timer refreshTimer = new(RefreshCallback, null, 1000, 5);
-
-            Thread.Sleep(Timeout.Infinite);
-        }
-
-        void RefreshCallback(object state)
-        {
-            if (led[0] == 255 && led[1] == 255 && led[2] == 50)
-            {
-                back = true;
-            }
-
-            if (led[0] < 0x_FF)
-                led[0] += 5;
-            else if (led[0] == 0x_FF && led[1] < 0x_FF)
-                led[1] += 5;
-            else if (led[1] == 0x_FF && led[2] < 0x_FF)
-                led[2] += 5;
-            else if (led[2] == 0x_FF)
-            {
-                led[0] = 0x_00;
-                led[1] = 0x_00;
-                led[2] = 0x_00;
-            }
-
-            foreach (var strip in strips)
-                strip.Write(buffer, led);
-
-            LedPixelController.Write(buffer);
-
-            if (back)
-                back = false;
-            else
-                back = true;
-        }
-
-        class Strip
-        {
-            readonly int index = 0;
-            readonly int count = 0;
-
-            public Strip(int index, int count)
-            {
-                this.index = index;
-                this.count = count;
-            }
-
-            public void Write(byte[] buffer, byte[] pixel)
-            {
-                var offset = index * 3;
-                for (var i = 0; i < count; i++)
-                {
-                    buffer[offset] = pixel[0];
-                    buffer[offset + 1] = pixel[1];
-                    buffer[offset + 2] = pixel[2];
-
-                    offset += 4 * 3;
-                }
             }
         }
     }

@@ -16,13 +16,17 @@
 using namespace interoplib::interoplib;
 
 
-void LedPixelController::NativeInit( signed int param0, uint8_t param1, uint8_t param2, uint8_t param3, HRESULT &hr )
+void LedPixelController::NativeInit( signed int param0, signed int param1, signed int param2, signed int param3, signed int param4, uint8_t param5, uint8_t param6, uint8_t param7, HRESULT &hr )
 {
 
     (void)param0;
     (void)param1;
     (void)param2;
     (void)param3;
+    (void)param4;
+    (void)param5;
+    (void)param6;
+    (void)param7;
     (void)hr;
 
 
