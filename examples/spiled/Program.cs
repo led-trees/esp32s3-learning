@@ -23,9 +23,9 @@ namespace spiled
 
             ledIndicator.Led1 = true;
 
-            ushort pixels = 262;
+            ushort pixels = 204;
             LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
-            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
+            //LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
 
             var leds = new Leds(pixels);
 
@@ -34,7 +34,7 @@ namespace spiled
                 ledIndicator.Led2 = true;
 
                 //leds.Color(new(232, 225, 50));
-                leds.Colors(new Color[] { new(255, 0, 0), new(0, 255, 0), new(0, 0, 255) });
+                leds.Colors(new Color[] { new(255, 0, 0), new(255, 255, 255) });
 
                 ledIndicator.Led2 = false;
                 Thread.Sleep(1000);
@@ -248,8 +248,10 @@ namespace spiled
                     rowOffset += 1;
                 }
 
-                rowOffset += part;
+                //rowOffset += part;
             }
+
+            LedPixelController.Write(data);
         }
     }
 }
