@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using nanoFramework.Hardware.Esp32;
 using nanoFramework.System.IO;
 using nanoFramework.System.IO.FileSystem;
 
@@ -18,7 +19,14 @@ namespace sdcard
             //var gpioController = new GpioController();
             //var togglersEnable = gpioController.OpenPin(11, PinMode.);
 
-            mycard = new SDCard(new SDCard.SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit });
+            Configuration.SetPinFunction(11, DeviceFunction.SDMMC1_CLOCK);
+            Configuration.SetPinFunction(12, DeviceFunction.SDMMC1_COMMAND);
+            Configuration.SetPinFunction(10, DeviceFunction.SDMMC1_D0);
+            Configuration.SetPinFunction(9, DeviceFunction.SDMMC1_D1);
+            Configuration.SetPinFunction(14, DeviceFunction.SDMMC1_D2);
+            Configuration.SetPinFunction(13, DeviceFunction.SDMMC1_D3);
+
+            mycard = new SDCard(new SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit });
 
             Debug.WriteLine("SDcard inited");
 
