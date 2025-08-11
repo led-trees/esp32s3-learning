@@ -24,10 +24,22 @@ namespace spiled
             ledIndicator.Led1 = true;
 
             ushort pixels = 204;
-            LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
-            //LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
+            //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
+            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
 
             var leds = new Leds(pixels);
+
+            while (true)
+            {
+                leds.Color(new(255, 255, 255));
+
+                for (ushort i = 0; i < pixels; i++)
+                {
+                    leds.Color(i, new(255, 0, 0));
+
+                    //Thread.Sleep(100);
+                }
+            }
 
             while (true)
             {
@@ -38,6 +50,8 @@ namespace spiled
 
                 ledIndicator.Led2 = false;
                 Thread.Sleep(1000);
+
+                break;
             }
 
             leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
@@ -70,7 +84,7 @@ namespace spiled
                     leds.Color(c);
 
                     ledIndicator.Led2 = true;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     ledIndicator.Led2 = false;
                 }
 
@@ -148,6 +162,16 @@ namespace spiled
         public void Color(Color color)
         {
             Color(color.Red, color.Green, color.Blue);
+        }
+
+        public void Color(ushort cell, Color color)
+        {
+            var i = cell * 3;
+            data[i] = color.Red;
+            data[i + 1] = color.Green;
+            data[i + 2] = color.Blue;
+
+            LedPixelController.Write(data);
         }
 
         public void Color(Color color1, Color color2, Color color3, Color color4)
