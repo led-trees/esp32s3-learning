@@ -23,22 +23,60 @@ namespace spiled
 
             ledIndicator.Led1 = true;
 
-            ushort pixels = 204;
+            ushort pixels = 360;
             //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
-            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 0, 0); // ver2
+            LedPixelController.Init(41, 39, 40, 21, pixels, 255, 0, 0); // ver2
 
             var leds = new Leds(pixels);
 
+            leds.Color(new(255, 0, 0));
+
+            var rndPixel = new Random();
+            var rndTime = new Random();
+            var flickers = new FlickerLed[10];
+
+            for (var i = 0; i < 10; i++)
+            {
+                var pixel = (ushort)rndPixel.Next(pixels - 1);
+                leds.Color(pixel, new(255, 255, 255));
+                flickers[i] = new FlickerLed { Number = pixel, Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5)) };
+            }
+
             while (true)
             {
+                var now = DateTime.UtcNow;
+                foreach (var flicker in flickers)
+                {
+                    if (flicker.Deadline <= now)
+                    {
+                        leds.Color(flicker.Number, new(255, 0, 0));
+
+                        flicker.Number = (ushort)rndPixel.Next(pixels - 1);
+                        flicker.Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5));
+
+                        leds.Color(flicker.Number, new(255, 255, 255));
+                    }
+                }
+
+                Thread.Sleep(1);
+            }
+
+            while (true)
+            {
+                ledIndicator.Led2 = true;
+
                 leds.Color(new(255, 255, 255));
 
                 for (ushort i = 0; i < pixels; i++)
                 {
                     leds.Color(i, new(255, 0, 0));
 
-                    //Thread.Sleep(100);
+                    Thread.Sleep(10);
                 }
+
+                ledIndicator.Led2 = false;
+
+                //Thread.Sleep(1000);
             }
 
             while (true)
@@ -127,6 +165,12 @@ namespace spiled
         }
     }
 
+    public class FlickerLed
+    {
+        public ushort Number { get; set; }
+        public DateTime Deadline { get; set; }
+    }
+
     public class Color
     {
         public byte Red = 0;
@@ -166,12 +210,23 @@ namespace spiled
 
         public void Color(ushort cell, Color color)
         {
-            var i = cell * 3;
-            data[i] = color.Red;
-            data[i + 1] = color.Green;
-            data[i + 2] = color.Blue;
+            var i = cell * 3 * 4;
 
-            LedPixelController.Write(data);
+            for (byte row = 0; row < 4; row++)
+            {
+                data[i] = color.Red;
+                data[i + 1] = color.Green;
+                data[i + 2] = color.Blue;
+
+                i += 3;
+            }
+
+            //LedPixelController.Write(data);
+
+            LedPixelController.Set(0, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(1, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(2, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(3, cell, color.Red, color.Green, color.Blue);
         }
 
         public void Color(Color color1, Color color2, Color color3, Color color4)

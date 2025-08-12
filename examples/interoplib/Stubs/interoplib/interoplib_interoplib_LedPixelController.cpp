@@ -56,3 +56,24 @@ void LedPixelController::NativeWrite( CLR_RT_TypedArray_UINT8 param0, HRESULT &h
 
 
 }
+
+void LedPixelController::NativeSet( uint8_t param0, uint16_t param1, uint8_t param2, uint8_t param3, uint8_t param4, HRESULT &hr )
+{
+
+    (void)param0;
+    (void)param1;
+    (void)param2;
+    (void)param3;
+    (void)param4;
+    (void)hr;
+
+
+    ////////////////////////////////
+    // implementation starts here //
+
+
+    // implementation ends here   //
+    ////////////////////////////////
+
+
+}

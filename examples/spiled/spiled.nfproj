@@ -30,9 +30,6 @@
     <Reference Include="CCSWE.nanoFramework.DhcpServer">
       <HintPath>..\..\packages\CCSWE.nanoFramework.DhcpServer.1.1.83\lib\CCSWE.nanoFramework.DhcpServer.dll</HintPath>
     </Reference>
-    <Reference Include="interoplib">
-      <HintPath>..\interoplib\bin\Debug\interoplib.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.17.11\lib\mscorlib.dll</HintPath>
     </Reference>
@@ -78,6 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\interoplib\interoplib.nfproj" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>
