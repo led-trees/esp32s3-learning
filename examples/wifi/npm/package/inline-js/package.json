@@ -1,0 +1,31 @@
+{
+  "name": "@esp32s3-frontend/inline-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@brandup/ui-dom": "^1.0.22",
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "html-inline-css-webpack-plugin": "^1.11.2",
+    "html-inline-script-webpack-plugin": "^3.2.1",
+    "html-webpack-plugin": "^5.6.0",
+    "less": "^4.2.0",
+    "less-loader": "^12.2.0",
+    "less-plugin-clean-css": "^1.6.0",
+    "mini-css-extract-plugin": "^2.9.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
