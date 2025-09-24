@@ -23,13 +23,13 @@ namespace spiled
 
             ledIndicator.Led1 = true;
 
-            ushort pixels = 360;
+            ushort pixels = 400;
             //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
-            LedPixelController.Init(41, 39, 40, 21, pixels, 255, 0, 0); // ver2
+            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 255, 0); // ver2
 
             var leds = new Leds(pixels);
 
-            leds.Color(new(255, 0, 0));
+            leds.Color(new(0, 255, 0));
 
             var rndPixel = new Random();
             var rndTime = new Random();
@@ -49,7 +49,7 @@ namespace spiled
                 {
                     if (flicker.Deadline <= now)
                     {
-                        leds.Color(flicker.Number, new(255, 0, 0));
+                        leds.Color(flicker.Number, new(0, 255, 0));
 
                         flicker.Number = (ushort)rndPixel.Next(pixels - 1);
                         flicker.Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5));

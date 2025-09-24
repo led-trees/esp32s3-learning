@@ -14,9 +14,14 @@ namespace interoplib
             NativeWrite(data);
         }
 
+        public static void Set(byte red, byte green, byte blue)
+        {
+            NativeSetFull(red, green, blue);
+        }
+
         public static void Set(byte line, ushort cell, byte red, byte green, byte blue)
         {
-            NativeSet(line, cell, red, green, blue);
+            NativeSetPixel(line, cell, red, green, blue);
         }
 
         #region Stubs 
@@ -28,7 +33,10 @@ namespace interoplib
         private static extern void NativeWrite(byte[] data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void NativeSet(byte line, ushort cell, byte red, byte green, byte blue);
+        private static extern void NativeSetFull(byte red, byte green, byte blue);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void NativeSetPixel(byte line, ushort cell, byte red, byte green, byte blue);
 
         #endregion stubs
     }
