@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using nanoFramework.Hardware.Esp32;
 using nanoFramework.System.IO;
 using nanoFramework.System.IO.FileSystem;
 
@@ -16,15 +15,18 @@ namespace sdcard
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
-            //var gpioController = new GpioController();
-            //var togglersEnable = gpioController.OpenPin(11, PinMode.);
+            // Option 2 use events to mount
+            // if Card detect available, enable events and mount when card inserted
+            // Enable Storage events if you have Card detect on adapter 
+            //StorageEventManager.RemovableDeviceInserted += StorageEventManager_RemovableDeviceInserted;
+            //StorageEventManager.RemovableDeviceRemoved += StorageEventManager_RemovableDeviceRemoved;
 
-            Configuration.SetPinFunction(11, DeviceFunction.SDMMC1_CLOCK);
-            Configuration.SetPinFunction(12, DeviceFunction.SDMMC1_COMMAND);
-            Configuration.SetPinFunction(10, DeviceFunction.SDMMC1_D0);
-            Configuration.SetPinFunction(9, DeviceFunction.SDMMC1_D1);
-            Configuration.SetPinFunction(14, DeviceFunction.SDMMC1_D2);
-            Configuration.SetPinFunction(13, DeviceFunction.SDMMC1_D3);
+            // Configuration.SetPinFunction(11, DeviceFunction.SDMMC1_CLOCK);
+            // Configuration.SetPinFunction(12, DeviceFunction.SDMMC1_COMMAND);
+            // Configuration.SetPinFunction(10, DeviceFunction.SDMMC1_D0);
+            // Configuration.SetPinFunction(9, DeviceFunction.SDMMC1_D1);
+            // Configuration.SetPinFunction(14, DeviceFunction.SDMMC1_D2);
+            // Configuration.SetPinFunction(13, DeviceFunction.SDMMC1_D3);
 
             mycard = new SDCard(new SDCardMmcParameters { dataWidth = SDCard.SDDataWidth._4_bit });
 
@@ -39,33 +41,22 @@ namespace sdcard
             // Try to mount card
             MountMyCard();
 
+            var drivers = DriveInfo.GetDrives();
+
             var current = Directory.GetCurrentDirectory();
             var dirs = Directory.GetDirectories("D:\\");
             var files = Directory.GetFiles("D:\\");
 
-            var drivers = DriveInfo.GetDrives();
 
             var filePath = "D:\\test.txt";
             if (File.Exists(filePath))
                 File.Delete(filePath);
             File.WriteAllText(filePath, "test test");
 
-            // Option 2 use events to mount
-            // if Card detect available, enable events and mount when card inserted
-            // Enable Storage events if you have Card detect on adapter 
-            StorageEventManager.RemovableDeviceInserted += StorageEventManager_RemovableDeviceInserted;
-            StorageEventManager.RemovableDeviceRemoved += StorageEventManager_RemovableDeviceRemoved;
-
             // Unmount drive
             UnMountIfMounted();
 
             Thread.Sleep(Timeout.Infinite);
-        }
-
-        static void UnMountIfMounted()
-        {
-            if (mycard.IsMounted)
-                mycard.Unmount();
         }
 
         static bool MountMyCard()
@@ -84,6 +75,12 @@ namespace sdcard
             }
 
             return false;
+        }
+
+        static void UnMountIfMounted()
+        {
+            if (mycard.IsMounted)
+                mycard.Unmount();
         }
 
         #region Storage Events 
