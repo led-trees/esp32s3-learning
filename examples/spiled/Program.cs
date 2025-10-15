@@ -8,6 +8,8 @@ namespace spiled
 {
     public class Program
     {
+        public static string SoftApIP { get; set; } = "192.168.4.1";
+
         public static void Main()
         {
             Debug.WriteLine("Hello from nanoFramework!");
@@ -21,20 +23,73 @@ namespace spiled
 
             ledIndicator.Led1 = true;
 
-            ushort pixels = 262;
-            LedPixelController.Init(pixels, 255, 255, 255);
+            ushort pixels = 400;
+            //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
+            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 255, 0); // ver2
 
             var leds = new Leds(pixels);
+
+            leds.Color(new(0, 255, 0));
+
+            var rndPixel = new Random();
+            var rndTime = new Random();
+            var flickers = new FlickerLed[10];
+
+            for (var i = 0; i < 10; i++)
+            {
+                var pixel = (ushort)rndPixel.Next(pixels - 1);
+                leds.Color(pixel, new(255, 255, 255));
+                flickers[i] = new FlickerLed { Number = pixel, Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5)) };
+            }
+
+            while (true)
+            {
+                var now = DateTime.UtcNow;
+                foreach (var flicker in flickers)
+                {
+                    if (flicker.Deadline <= now)
+                    {
+                        leds.Color(flicker.Number, new(0, 255, 0));
+
+                        flicker.Number = (ushort)rndPixel.Next(pixels - 1);
+                        flicker.Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5));
+
+                        leds.Color(flicker.Number, new(255, 255, 255));
+                    }
+                }
+
+                Thread.Sleep(1);
+            }
+
+            while (true)
+            {
+                ledIndicator.Led2 = true;
+
+                leds.Color(new(255, 255, 255));
+
+                for (ushort i = 0; i < pixels; i++)
+                {
+                    leds.Color(i, new(255, 0, 0));
+
+                    Thread.Sleep(10);
+                }
+
+                ledIndicator.Led2 = false;
+
+                //Thread.Sleep(1000);
+            }
 
             while (true)
             {
                 ledIndicator.Led2 = true;
 
                 //leds.Color(new(232, 225, 50));
-                leds.Colors(new Color[] { new(255, 0, 0), new(0, 255, 0), new(0, 0, 255) });
+                leds.Colors(new Color[] { new(255, 0, 0), new(255, 255, 255) });
 
                 ledIndicator.Led2 = false;
                 Thread.Sleep(1000);
+
+                break;
             }
 
             leds.Color(new(255, 0, 0), new(0, 255, 0), new(0, 0, 255), new(255, 255, 0));
@@ -67,7 +122,7 @@ namespace spiled
                     leds.Color(c);
 
                     ledIndicator.Led2 = true;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     ledIndicator.Led2 = false;
                 }
 
@@ -110,6 +165,12 @@ namespace spiled
         }
     }
 
+    public class FlickerLed
+    {
+        public ushort Number { get; set; }
+        public DateTime Deadline { get; set; }
+    }
+
     public class Color
     {
         public byte Red = 0;
@@ -145,6 +206,27 @@ namespace spiled
         public void Color(Color color)
         {
             Color(color.Red, color.Green, color.Blue);
+        }
+
+        public void Color(ushort cell, Color color)
+        {
+            var i = cell * 3 * 4;
+
+            for (byte row = 0; row < 4; row++)
+            {
+                data[i] = color.Red;
+                data[i + 1] = color.Green;
+                data[i + 2] = color.Blue;
+
+                i += 3;
+            }
+
+            //LedPixelController.Write(data);
+
+            LedPixelController.Set(0, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(1, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(2, cell, color.Red, color.Green, color.Blue);
+            LedPixelController.Set(3, cell, color.Red, color.Green, color.Blue);
         }
 
         public void Color(Color color1, Color color2, Color color3, Color color4)
@@ -245,95 +327,10 @@ namespace spiled
                     rowOffset += 1;
                 }
 
-                rowOffset += part;
-            }
-        }
-    }
-
-    public class LedPixels
-    {
-        const int STRIPS_CNT = 4;
-        const int LEDS_CNT = 200;
-        const int BUFER_SIZE = STRIPS_CNT * LEDS_CNT * 3;
-
-        readonly Strip[] strips = new Strip[STRIPS_CNT];
-        readonly byte[] led = new byte[3] { 0x_FF, 0x_FF, 0x_FF };
-        byte[] buffer = new byte[BUFER_SIZE];
-        bool back = false;
-
-        public LedPixels()
-        {
-        }
-
-        public void Work()
-        {
-            for (var s = 0; s < STRIPS_CNT; s++)
-                strips[s] = new Strip(s, LEDS_CNT);
-
-            for (var s = 0; s < BUFER_SIZE; s++)
-                buffer[s] = 0x_FF;
-
-            LedPixelController.Init(LEDS_CNT, 0x_00, 0x_00, 0x_FF);
-
-            Timer refreshTimer = new(RefreshCallback, null, 1000, 5);
-
-            Thread.Sleep(Timeout.Infinite);
-        }
-
-        void RefreshCallback(object state)
-        {
-            if (led[0] == 255 && led[1] == 255 && led[2] == 50)
-            {
-                back = true;
+                //rowOffset += part;
             }
 
-            if (led[0] < 0x_FF)
-                led[0] += 5;
-            else if (led[0] == 0x_FF && led[1] < 0x_FF)
-                led[1] += 5;
-            else if (led[1] == 0x_FF && led[2] < 0x_FF)
-                led[2] += 5;
-            else if (led[2] == 0x_FF)
-            {
-                led[0] = 0x_00;
-                led[1] = 0x_00;
-                led[2] = 0x_00;
-            }
-
-            foreach (var strip in strips)
-                strip.Write(buffer, led);
-
-            LedPixelController.Write(buffer);
-
-            if (back)
-                back = false;
-            else
-                back = true;
-        }
-
-        class Strip
-        {
-            readonly int index = 0;
-            readonly int count = 0;
-
-            public Strip(int index, int count)
-            {
-                this.index = index;
-                this.count = count;
-            }
-
-            public void Write(byte[] buffer, byte[] pixel)
-            {
-                var offset = index * 3;
-                for (var i = 0; i < count; i++)
-                {
-                    buffer[offset] = pixel[0];
-                    buffer[offset + 1] = pixel[1];
-                    buffer[offset + 2] = pixel[2];
-
-                    offset += 4 * 3;
-                }
-            }
+            LedPixelController.Write(data);
         }
     }
 }

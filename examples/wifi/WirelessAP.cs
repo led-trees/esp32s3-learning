@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Net.NetworkInformation;
-using Iot.Device.DhcpServer;
 using nanoFramework.Runtime.Native;
 
 namespace wifi
@@ -36,17 +34,17 @@ namespace wifi
                 //Power.RebootDevice();
             }
 
-            var dhcpserver = new DhcpServer
-            {
-                CaptivePortalUrl = $"http://{SoftApIP}"
-            };
-            var dhcpInitResult = dhcpserver.Start(IPAddress.Parse(SoftApIP), new IPAddress(new byte[] { 255, 255, 255, 0 }));
-            if (!dhcpInitResult)
-            {
-                Console.WriteLine($"Error initializing DHCP server.");
-                // This happens after a very freshly flashed device
-                Power.RebootDevice();
-            }
+            //var dhcpserver = new DhcpServer
+            //{
+            //    CaptivePortalUrl = $"http://{SoftApIP}"
+            //};
+            //var dhcpInitResult = dhcpserver.Start(IPAddress.Parse(SoftApIP), new IPAddress(new byte[] { 255, 255, 255, 0 }));
+            //if (!dhcpInitResult)
+            //{
+            //    Console.WriteLine($"Error initializing DHCP server.");
+            //    // This happens after a very freshly flashed device
+            //    Power.RebootDevice();
+            //}
 
             Console.WriteLine($"Running Soft AP, waiting for client to connect");
             Console.WriteLine($"Soft AP IP address :{GetIP()}");
