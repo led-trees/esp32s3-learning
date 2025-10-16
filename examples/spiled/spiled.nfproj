@@ -25,10 +25,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CCSWE.nanoFramework.Core">
-      <HintPath>..\..\packages\CCSWE.nanoFramework.Core.1.1.83\lib\CCSWE.nanoFramework.Core.dll</HintPath>
+      <HintPath>..\..\packages\CCSWE.nanoFramework.Core.1.1.84\lib\CCSWE.nanoFramework.Core.dll</HintPath>
     </Reference>
     <Reference Include="CCSWE.nanoFramework.DhcpServer">
-      <HintPath>..\..\packages\CCSWE.nanoFramework.DhcpServer.1.1.83\lib\CCSWE.nanoFramework.DhcpServer.dll</HintPath>
+      <HintPath>..\..\packages\CCSWE.nanoFramework.DhcpServer.1.1.84\lib\CCSWE.nanoFramework.DhcpServer.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.17.11\lib\mscorlib.dll</HintPath>

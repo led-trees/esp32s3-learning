@@ -16,12 +16,29 @@ namespace spiled
 
             var gpioController = new GpioController();
             var ledIndicator = new LedIndicator(gpioController);
+
+            ledIndicator.Led2 = true;
+
+            //try
+            //{
+            //    WiFi.SetupAP("test", "555111555");
+
+            //    ledIndicator.Led1 = true;
+            //}
+            //catch
+            //{
+
+            //}
+
+            //Thread.Sleep(Timeout.Infinite);
+            //return;
+
+
             var togglers = new Togglers(gpioController);
 
             var deviceNumber = togglers.Byte;
             Debug.WriteLine($"Номер платы: {deviceNumber}");
 
-            ledIndicator.Led1 = true;
 
             ushort pixels = 400;
             //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1

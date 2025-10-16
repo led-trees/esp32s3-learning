@@ -23,10 +23,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Iot.Device.AtModem">
-      <HintPath>..\..\packages\nanoFramework.Iot.Device.AtModem.1.0.495\lib\Iot.Device.AtModem.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Iot.Device.AtModem.1.0.512\lib\Iot.Device.AtModem.dll</HintPath>
     </Reference>
     <Reference Include="Iot.Device.Common.GnssDevice">
-      <HintPath>..\..\packages\nanoFramework.Iot.Device.Common.GnssDevice.1.0.281\lib\Iot.Device.Common.GnssDevice.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Iot.Device.Common.GnssDevice.1.0.299\lib\Iot.Device.Common.GnssDevice.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.17.11\lib\mscorlib.dll</HintPath>
