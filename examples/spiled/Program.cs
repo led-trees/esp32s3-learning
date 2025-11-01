@@ -15,9 +15,10 @@ namespace spiled
             Debug.WriteLine("Hello from nanoFramework!");
 
             var gpioController = new GpioController();
-            var ledIndicator = new LedIndicator(gpioController);
-
-            ledIndicator.Led2 = true;
+            var ledIndicator = new LedIndicator(gpioController)
+            {
+                Led2 = true
+            };
 
             //try
             //{
@@ -34,29 +35,36 @@ namespace spiled
             //return;
 
 
-            var togglers = new Togglers(gpioController);
+            //var togglers = new Togglers(gpioController);
+            //var deviceNumber = togglers.Byte;
+            //Debug.WriteLine($"Номер платы: {deviceNumber}");
 
-            var deviceNumber = togglers.Byte;
-            Debug.WriteLine($"Номер платы: {deviceNumber}");
 
-
-            ushort pixels = 400;
+            ushort channelPixels = 200;
             //LedPixelController.Init(41, 39, 40, 37, pixels, 0, 0, 0); // ver1
-            LedPixelController.Init(41, 39, 40, 21, pixels, 0, 255, 0); // ver2
+            LedPixelController.Init(41, 39, 40, 21, channelPixels, 0, 0, 0); // ver2
 
-            var leds = new Leds(pixels);
+            var leds = new Leds(channelPixels);
 
-            leds.Color(new(0, 255, 0));
+            leds.Random(new Color[] {new (255,0,0),
+                    new (0, 255, 0),
+                    new (0,0,255),
+                    new (50, 63, 248),
+                    new (255, 251, 0) });
 
+            var countFlickers = 30;
             var rndPixel = new Random();
             var rndTime = new Random();
-            var flickers = new FlickerLed[10];
+            var flickers = new FlickerLed[countFlickers];
+            var flickerColor = new Color(255, 255, 255);
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < countFlickers; i++)
             {
-                var pixel = (ushort)rndPixel.Next(pixels - 1);
-                leds.Color(pixel, new(255, 255, 255));
-                flickers[i] = new FlickerLed { Number = pixel, Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5)) };
+                var pixel = (ushort)rndPixel.Next(leds.TotalPixels - 1);
+                var prevColor = leds.GetColor(pixel);
+
+                leds.Color(pixel, flickerColor);
+                flickers[i] = new FlickerLed { Number = pixel, Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5)), Prev = prevColor };
             }
 
             while (true)
@@ -66,12 +74,30 @@ namespace spiled
                 {
                     if (flicker.Deadline <= now)
                     {
-                        leds.Color(flicker.Number, new(0, 255, 0));
+                        leds.Color(flicker.Number, flicker.Prev); // возвращаем цвет
 
-                        flicker.Number = (ushort)rndPixel.Next(pixels - 1);
+                        while (true)
+                        {
+                            var nextNumber = (ushort)rndPixel.Next(leds.TotalPixels - 1);
+
+                            var exist = false;
+                            foreach (var f in flickers)
+                            {
+                                if (f.Number == nextNumber)
+                                    exist = true;
+                            }
+
+                            if (exist)
+                                continue;
+
+                            flicker.Number = nextNumber;
+                            break;
+                        }
+
                         flicker.Deadline = DateTime.UtcNow.AddMilliseconds(rndTime.Next(5));
+                        flicker.Prev = leds.GetColor(flicker.Number);
 
-                        leds.Color(flicker.Number, new(255, 255, 255));
+                        leds.Color(flicker.Number, flickerColor);
                     }
                 }
 
@@ -84,7 +110,7 @@ namespace spiled
 
                 leds.Color(new(255, 255, 255));
 
-                for (ushort i = 0; i < pixels; i++)
+                for (ushort i = 0; i < channelPixels; i++)
                 {
                     leds.Color(i, new(255, 0, 0));
 
@@ -186,6 +212,7 @@ namespace spiled
     {
         public ushort Number { get; set; }
         public DateTime Deadline { get; set; }
+        public Color Prev { get; set; }
     }
 
     public class Color
@@ -206,10 +233,12 @@ namespace spiled
     {
         readonly byte[] data;
         readonly ushort countPixels;
+        public readonly ushort TotalPixels;
 
         public Leds(ushort countPixels)
         {
             this.countPixels = countPixels;
+            TotalPixels = (ushort)(countPixels * 4);
 
             var bufferSize = countPixels * 4 * 3;
             data = new byte[bufferSize];
@@ -220,6 +249,12 @@ namespace spiled
             LedPixelController.Write(data);
         }
 
+        public Color GetColor(ushort pixel)
+        {
+            var i = pixel * 3;
+            return new(data[i + 0], data[i + 1], data[i + 2]);
+        }
+
         public void Color(Color color)
         {
             Color(color.Red, color.Green, color.Blue);
@@ -227,23 +262,29 @@ namespace spiled
 
         public void Color(ushort cell, Color color)
         {
-            var i = cell * 3 * 4;
+            // var i = cell * 3 * 4;
+            // 
+            // for (byte row = 0; row < 4; row++)
+            // {
+            //     data[i] = color.Red;
+            //     data[i + 1] = color.Green;
+            //     data[i + 2] = color.Blue;
+            // 
+            //     i += 3;
+            // }
 
-            for (byte row = 0; row < 4; row++)
-            {
-                data[i] = color.Red;
-                data[i + 1] = color.Green;
-                data[i + 2] = color.Blue;
+            var i = cell * 3;
 
-                i += 3;
-            }
+            data[i + 0] = color.Red;
+            data[i + 1] = color.Green;
+            data[i + 2] = color.Blue;
 
-            //LedPixelController.Write(data);
+            LedPixelController.Write(data);
 
-            LedPixelController.Set(0, cell, color.Red, color.Green, color.Blue);
-            LedPixelController.Set(1, cell, color.Red, color.Green, color.Blue);
-            LedPixelController.Set(2, cell, color.Red, color.Green, color.Blue);
-            LedPixelController.Set(3, cell, color.Red, color.Green, color.Blue);
+            // LedPixelController.Set(0, cell, color.Red, color.Green, color.Blue);
+            // LedPixelController.Set(1, cell, color.Red, color.Green, color.Blue);
+            // LedPixelController.Set(2, cell, color.Red, color.Green, color.Blue);
+            // LedPixelController.Set(3, cell, color.Red, color.Green, color.Blue);
         }
 
         public void Color(Color color1, Color color2, Color color3, Color color4)
@@ -317,6 +358,30 @@ namespace spiled
         {
             var rand = new Random();
             rand.NextBytes(data);
+
+            LedPixelController.Write(data);
+        }
+
+        public void Random(Color[] colors)
+        {
+            if (colors == null)
+                throw new ArgumentNullException(nameof(colors));
+            if (colors.Length <= 1)
+                throw new ArgumentOutOfRangeException(nameof(colors));
+
+            var countPixels = this.countPixels * 4;
+            var rand = new Random();
+            for (int iPixel = 0; iPixel < countPixels; iPixel++)
+            {
+                var index = rand.Next(colors.Length - 1);
+                var color = colors[index];
+
+                var pixelOffset = iPixel * 3;
+
+                data[pixelOffset] = color.Red;
+                data[pixelOffset + 1] = color.Green;
+                data[pixelOffset + 2] = color.Blue;
+            }
 
             LedPixelController.Write(data);
         }
